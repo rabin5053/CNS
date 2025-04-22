@@ -27,102 +27,57 @@ becomes C. To change a message back, each letter is replaced by the one three be
 ### STEP-5: Display the cipher text obtained above.
 
 
-PROGRAM :-
+PROGRAM :
+#include <stdio.h>
+#include <stdlib.h>
 
+// Function to perform Caesar Cipher encryption
+void caesarEncrypt(char *text, int key) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        char c = text[i];
+        // Check if the character is an uppercase letter
+        if (c >= 'A' && c <= 'Z') {
+            text[i] = ((c - 'A' + key) % 26 + 26) % 26 + 'A';
+        }
+        // Check if the character is a lowercase letter
+        else if (c >= 'a' && c <= 'z') {
+            text[i] = ((c - 'a' + key) % 26 + 26) % 26 + 'a';
+        }
+        // Ignore non-alphabetic characters
+    }
+}
 
+// Function to perform Caesar Cipher decryption
+void caesarDecrypt(char *text, int key) {
+    // Decryption is the same as encryption with a negative key
+    caesarEncrypt(text, -key);
+}
 
-def format_key(key):
-    key = key.upper().replace('J', 'I')  
-    key = ''.join(sorted(set(key), key=key.index))  
-    return key
+int main() {
+    char message[100]; // Declare a character array to store the message
+    int key;
 
-def create_matrix(key):
-    alphabet = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
-    matrix = []
-    for char in key:
-        if char not in matrix:
-            matrix.append(char)
-    for char in alphabet:
-        if char not in matrix:
-            matrix.append(char)
-    return [matrix[i:i+5] for i in range(0, len(matrix), 5)] 
+    printf("Enter the message to encrypt: ");
+    fgets(message, sizeof(message), stdin); // Read input from the user
 
-def prepare_plaintext(plain_text):
-    plain_text = plain_text.upper().replace('J', 'I')
-    prepared_text = []
-    i = 0
-    while i < len(plain_text):
-        if i + 1 < len(plain_text) and plain_text[i] == plain_text[i + 1]:
-            prepared_text.append(plain_text[i] + 'X')
-            i += 1
-        else:
-            prepared_text.append(plain_text[i:i + 2])  
-            i += 2
-    if len(prepared_text[-1]) == 1:  
-        prepared_text[-1] = prepared_text[-1] + 'X'
-    return prepared_text
+    printf("Enter the Caesar Cipher key (an integer): ");
+    scanf("%d", &key); // Read the key from the user
 
+    // Encrypt the message using the Caesar Cipher
+    caesarEncrypt(message, key);
+    printf("Encrypted Message: %s\n", message);
 
-def find_position(matrix, char):
-    for i in range(5):
-        for j in range(5):
-            if matrix[i][j] == char:
-                return i, j
+    // Decrypt the message back to the original
+    caesarDecrypt(message, key);
+    printf("Decrypted Message: %s\n", message);
 
-def encrypt(plain_text, key):
-    key = format_key(key)
-    matrix = create_matrix(key)
-    bigrams = prepare_plaintext(plain_text)
-    
-    cipher_text = ''
-    for bigram in bigrams:
-        row1, col1 = find_position(matrix, bigram[0])
-        row2, col2 = find_position(matrix, bigram[1])
-        
-       
-        if row1 == row2:
-            cipher_text += matrix[row1][(col1 + 1) % 5]
-            cipher_text += matrix[row2][(col2 + 1) % 5]
-      
-        elif col1 == col2:
-            cipher_text += matrix[(row1 + 1) % 5][col1]
-            cipher_text += matrix[(row2 + 1) % 5][col2]
-      
-        else:
-            cipher_text += matrix[row1][col2]
-            cipher_text += matrix[row2][col1]
-    
-    return cipher_text
-
-def decrypt(cipher_text, key):
-    key = format_key(key)
-    matrix = create_matrix(key)
-    bigrams = [cipher_text[i:i + 2] for i in range(0, len(cipher_text), 2)]
-    
-    plain_text = ''
-    for bigram in bigrams:
-        row1, col1 = find_position(matrix, bigram[0])
-        row2, col2 = find_position(matrix, bigram[1])
-        
-        
-        if row1 == row2:
-            plain_text += matrix[row1][(col1 - 1) % 5]
-            plain_text += matrix[row2][(col2 - 1) % 5]
-       
-        elif col1 == col2:
-            plain_text += matrix[(row1 - 1) % 5][col1]
-            plain_text += matrix[(row2 - 1) % 5][col2]
-       
-        else:
-            plain_text += matrix[row1][col2]
-            plain_text += matrix[row2][col1]
-    
-    return plain_text
+    return 0;
+}
 
 
 
 
 OUTPUT :-
-![image](https://github.com/user-attachments/assets/3e5f23f8-60e9-4dd2-97d8-8e0cbae1052e)
+![image](https://github.com/user-attachments/assets/3f8dce94-ea66-4881-8394-0f2dd15cd2aa)
 
 
